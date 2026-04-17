@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "enrollment": {
+      "title": "Enrollment",
+      "description": "Student enrollment and payment data",
+      "type": "object",
+      "properties": {
+        "fullName": { "type": "string", "description": "Student's full name" },
+        "email": { "type": "string", "format": "email", "description": "Student's email address" },
+        "phone": { "type": "string", "description": "Student's contact number" },
+        "paymentMethod": { "type": "string", "enum": ["bkash", "nagad", "upay", "bank"], "description": "Selected payment method" },
+        "transactionId": { "type": "string", "description": "Payment transaction ID" },
+        "senderNumber": { "type": "string", "description": "Account number from which money was sent" },
+        "amount": { "type": "number", "description": "Amount sent" },
+        "courseName": { "type": "string", "description": "Name of the course" },
+        "status": { "type": "string", "enum": ["pending", "verified"], "description": "Enrollment status" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of enrollment" }
+      },
+      "required": ["fullName", "phone", "paymentMethod", "transactionId", "senderNumber", "amount"]
+    }
+  },
+  "firestore": {
+    "/enrollments/{enrollmentId}": {
+      "schema": "enrollment",
+      "description": "Collection of student enrollments"
+    }
+  }
+}
