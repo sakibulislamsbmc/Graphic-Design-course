@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from 'react';
+import React, { useState, useEffect, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   BrowserRouter as Router,
@@ -490,6 +490,60 @@ function EnrollmentPage() {
 function LandingPage() {
   const navigate = useNavigate();
   const [isEbookPreviewOpen, setIsEbookPreviewOpen] = useState(false);
+  const [isFullReaderOpen, setIsFullReaderOpen] = useState(false);
+  const [isPrivacyActive, setIsPrivacyActive] = useState(false);
+
+  // Advanced Security: Visibility and Focus Monitoring
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden' && (isFullReaderOpen || isEbookPreviewOpen)) {
+        setIsPrivacyActive(true);
+      }
+    };
+
+    const handleBlur = () => {
+      if (isFullReaderOpen || isEbookPreviewOpen) {
+        setIsPrivacyActive(true);
+      }
+    };
+
+    const handleFocus = () => {
+      setIsPrivacyActive(false);
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Block Print (Ctrl/Cmd + P)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+        e.preventDefault();
+      }
+      // Block Save (Ctrl/Cmd + S)
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+      }
+      // Block PrintScreen (Commonly detected as 'PrintScreen' or 'Snapshot')
+      if (e.key === 'PrintScreen' || e.key === 'Snapshot') {
+        setIsPrivacyActive(true);
+        setTimeout(() => setIsPrivacyActive(false), 2000);
+      }
+    };
+
+    window.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('blur', handleBlur);
+    window.addEventListener('focus', handleFocus);
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isFullReaderOpen, isEbookPreviewOpen]);
+
+  // Function to prevent right-click on the viewer
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+  };
 
   return (
     <div className="min-h-screen bg-[#0d1017] text-white font-sans selection:bg-violet-500/30">
@@ -951,7 +1005,7 @@ function LandingPage() {
                   <motion.button 
                     whileHover={{ scale: 1.05 }} 
                     whileTap={{ scale: 0.95 }} 
-                    onClick={() => navigate('/enroll')}
+                    onClick={() => setIsFullReaderOpen(true)}
                     className="flex-1 bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white px-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-[0_10px_30px_rgba(217,70,239,0.3)] transition-all"
                   >
                     <Wallet size={18} /> ফ্রীতে পড়ুন
@@ -1072,7 +1126,7 @@ function LandingPage() {
         </div>
       </footer>
 
-      {/* Ebook Preview Modal */}
+      {/* Ebook Preview Modal (Limited Pages) */}
       <AnimatePresence>
         {isEbookPreviewOpen && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
@@ -1088,11 +1142,12 @@ function LandingPage() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               className="bg-[#121626] border border-[#262c43] w-full max-w-5xl h-full max-h-[85vh] rounded-[2rem] shadow-2xl relative flex flex-col overflow-hidden z-10"
+              onContextMenu={handleContextMenu}
             >
               <div className="flex items-center justify-between p-6 border-b border-[#262c43] bg-[#0d1017]">
                  <div>
-                    <h3 className="font-bold text-white text-xl">Preview: The Ultimate Graphic Design Guide</h3>
-                    <p className="text-sm text-gray-400">Read a few pages before you unlock the full version.</p>
+                    <h3 className="font-bold text-white text-xl uppercase tracking-tighter italic">Preview: Graphic Design Guide</h3>
+                    <p className="text-sm text-gray-400">Read first 5-6 pages (Table of Contents & Intro)</p>
                  </div>
                  <button 
                   onClick={() => setIsEbookPreviewOpen(false)}
@@ -1101,28 +1156,143 @@ function LandingPage() {
                    <Minus className="w-5 h-5 text-gray-400 cursor-pointer rotate-45" />
                  </button>
               </div>
-              <div className="flex-1 w-full bg-white relative">
-                 {/* Google Drive Preview PDF Embed */}
-                 <iframe 
-                   src="https://drive.google.com/file/d/1EeI7kGc0NdzWszQn1Cd6nEagjEOLdChv/preview" 
-                   className="w-full h-full border-none" 
-                   allow="autoplay"
-                   title="Ebook Preview"
-                 ></iframe>
-              </div>
-              <div className="p-4 border-t border-[#262c43] bg-[#0d1017] flex justify-between items-center">
-                 <p className="text-sm text-gray-400">Like what you read?</p>
-                 <motion.button 
-                    whileHover={{ scale: 1.02 }} 
-                    whileTap={{ scale: 0.98 }} 
-                    onClick={() => navigate('/enroll')}
-                    className="bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white px-6 py-2.5 rounded-lg font-bold shadow-[0_5px_15px_rgba(37,211,102,0.3)]"
-                  >
-                    ফ্রীতে পড়ুন
-                 </motion.button>
+              
+              <div className="flex-1 w-full bg-[#121626] relative overflow-hidden">
+                 {/* Limited View Container */}
+                 <div className="w-full h-full overflow-y-auto overflow-x-hidden relative">
+                    <div className="w-full relative h-[4500px] overflow-hidden"> {/* Height restricted to ~6 pages */}
+                       <iframe 
+                         src="https://drive.google.com/file/d/1EeI7kGc0NdzWszQn1Cd6nEagjEOLdChv/preview" 
+                         className="absolute -top-[52px] left-0 w-full h-[calc(100%+52px)] border-none pointer-events-auto" 
+                         allow="autoplay"
+                         title="Ebook Preview"
+                       ></iframe>
+                       {/* Invisible Security Shields to block interaction with the toolbar area */}
+                       <div className="absolute top-0 left-0 w-full h-12 z-50 bg-transparent pointer-events-auto"></div>
+                       <div className="absolute top-0 right-0 w-16 h-full z-50 bg-transparent pointer-events-auto"></div>
+                    </div>
+                    {/* Visual Cut-off Message */}
+                    <div className="sticky bottom-0 left-0 right-0 bg-gradient-to-t from-[#121626] via-[#121626] to-transparent py-20 px-8 text-center z-40 border-t border-white/5">
+                        <h4 className="text-xl font-bold text-white mb-2 italic">Want to read more?</h4>
+                        <p className="text-gray-400 text-sm mb-6">সংক্ষেপিত প্রিভিউ শেষ হয়েছে। সম্পূর্ণ বইটি পড়তে "ফ্রীতে পড়ুন" বাটনে ক্লিক করুন।</p>
+                        <motion.button 
+                          whileHover={{ scale: 1.05 }} 
+                          whileTap={{ scale: 0.95 }} 
+                          onClick={() => {
+                            setIsEbookPreviewOpen(false);
+                            setIsFullReaderOpen(true);
+                          }}
+                          className="bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white px-8 py-3 rounded-full font-bold shadow-lg"
+                        >
+                          Unlock Full Screen View
+                        </motion.button>
+                    </div>
+                 </div>
               </div>
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* Ebook Full Reader (Free Access) */}
+      <AnimatePresence>
+        {isFullReaderOpen && (
+          <motion.div 
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-[200] bg-[#0d1017] flex flex-col overflow-hidden"
+            onContextMenu={handleContextMenu}
+          >
+            {/* Reader Header */}
+            <div className="h-16 md:h-20 bg-[#121626] border-b border-[#262c43] flex items-center justify-between px-6 z-50">
+               <div className="flex items-center gap-4">
+                  <button 
+                    onClick={() => setIsFullReaderOpen(false)}
+                    className="p-2 hover:bg-white/5 rounded-xl transition-colors text-gray-400 hover:text-white"
+                  >
+                    <ChevronLeft className="w-6 h-6" />
+                  </button>
+                  <div>
+                    <h3 className="font-bold text-white text-base md:text-lg leading-tight uppercase italic flex items-center gap-2">
+                       <BookOpen size={18} className="text-fuchsia-400" /> Full Ebook Reader
+                    </h3>
+                    <p className="text-[10px] text-gray-500 font-bold tracking-[0.2em] uppercase">Bismahsoft Academy Premium</p>
+                  </div>
+               </div>
+               <div className="flex items-center gap-3">
+                  <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                     <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Free Access Granted</span>
+                  </div>
+                  <button 
+                    onClick={() => setIsFullReaderOpen(false)}
+                    className="w-10 h-10 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center transition-colors"
+                  >
+                    <Minus className="w-5 h-5 text-gray-400 rotate-45" />
+                  </button>
+               </div>
+            </div>
+
+            {/* Reader Body */}
+            <div className="flex-1 relative bg-[#05060a] overflow-hidden">
+               {/* Shifted Iframe to hide original Drive toolbar (top ~52px) */}
+               <iframe 
+                 src="https://drive.google.com/file/d/1EeI7kGc0NdzWszQn1Cd6nEagjEOLdChv/preview" 
+                 className="absolute -top-[52px] left-0 w-full h-[calc(100%+52px)] border-none" 
+                 allow="autoplay"
+                 title="Full Ebook Viewer"
+               ></iframe>
+
+               {/* Invisible Security Shields: Completely transparent but blocks clicks to specific hidden UI areas */}
+               <div className="absolute top-0 left-0 w-full h-16 z-[60] bg-transparent pointer-events-auto cursor-default"></div>
+               <div className="absolute top-0 right-0 w-20 h-full z-[60] bg-transparent pointer-events-auto cursor-default"></div>
+               
+               {/* Privacy Curtain for Screenshot Protection */}
+               <AnimatePresence>
+                 {isPrivacyActive && (
+                   <motion.div 
+                     initial={{ opacity: 0 }}
+                     animate={{ opacity: 1 }}
+                     exit={{ opacity: 0 }}
+                     className="absolute inset-0 z-[100] bg-black flex flex-col items-center justify-center p-8 text-center"
+                   >
+                     <div className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mb-6 border border-red-500/20">
+                        <Minus className="w-8 h-8 text-red-500 rotate-45" />
+                     </div>
+                     <h4 className="text-2xl font-black text-white mb-2 uppercase italic tracking-tighter italic">Security Alert</h4>
+                     <p className="text-gray-400 text-sm max-w-xs leading-relaxed">
+                        প্রাইভেসি সুরক্ষায় স্ক্রিনশট বা অন্য কোনোভাবে কপি করা নিষিদ্ধ। <br />
+                        <span className="text-violet-400 font-bold mt-2 inline-block italic">Please return focus to the website to continue reading.</span>
+                     </p>
+                   </motion.div>
+                 )}
+               </AnimatePresence>
+
+               {/* Watermark Overlay: Optimized for visibility on all backgrounds */}
+               <div className="absolute inset-0 pointer-events-none z-40 flex items-center justify-center select-none overflow-hidden opacity-[0.08]">
+                  <div className="rotate-45 space-y-24">
+                     {[1, 2, 3, 4, 5].map((row) => (
+                       <div key={row} className="flex gap-24 whitespace-nowrap">
+                          {[1, 2, 3].map((col) => (
+                            <span key={col} className="text-[6vw] font-black text-violet-500 uppercase tracking-widest italic drop-shadow-sm">
+                               BISMAHSOFT ACADEMY
+                            </span>
+                          ))}
+                       </div>
+                     ))}
+                  </div>
+               </div>
+            </div>
+            
+            {/* Footer Status Bar */}
+            <div className="h-10 bg-[#0d1017] border-t border-[#262c43] flex items-center justify-center px-6">
+               <p className="text-[10px] text-gray-600 font-medium tracking-[0.1em] text-center">
+                  © 2026 Bismahsoft Academy · No unauthorized distribution or downloads allowed.
+               </p>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
