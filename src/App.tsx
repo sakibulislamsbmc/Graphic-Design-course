@@ -51,7 +51,8 @@ import {
   Box,
   ShoppingCart,
   Trophy,
-  Coffee
+  Coffee,
+  Award
 } from "lucide-react";
 
 // --- Data ---
@@ -979,6 +980,72 @@ function LandingPage() {
                   ))}
                 </ul>
               </motion.div>
+            </div>
+          </section>
+
+          {/* Section: Certificate (NEW) */}
+          <section id="certificate" className="w-full max-w-5xl mx-auto pt-24 pb-10 scroll-mt-24">
+            <div className="bg-gradient-to-br from-[#161a2b] to-[#0d1017] border border-amber-500/20 rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative overflow-hidden flex flex-col md:flex-row gap-10 items-center">
+              
+              {/* Background Glow */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-amber-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+              
+              {/* Text Side */}
+              <div className="w-full md:w-1/2 relative z-10">
+                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 mb-6">
+                    <Award className="w-4 h-4 text-amber-400" />
+                    <span className="text-sm font-semibold tracking-wide text-amber-300">Professional Certificate</span>
+                 </div>
+                 <h2 className="text-3xl md:text-5xl font-black text-white mb-6 tracking-tighter">
+                    Course <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">Completion</span>
+                 </h2>
+                 <p className="text-gray-300 text-lg leading-relaxed mb-6 font-medium border-l-4 border-amber-500/50 pl-4">
+                    কোর্স শেষে পরীক্ষায় <span className="text-amber-400 font-bold">৮০% বা তার বেশি</span> নম্বর পাওয়া শিক্ষার্থীদেরকে Bismahsoft Academy-এর পক্ষ থেকে একটি প্রফেশনাল সার্টিফিকেট প্রদান করা হবে।
+                 </p>
+                 <motion.button 
+                   whileHover={{ scale: 1.05 }} 
+                   whileTap={{ scale: 0.95 }} 
+                   onClick={() => navigate('/enroll')}
+                   className="bg-amber-500 hover:bg-amber-400 text-[#0d1017] px-8 py-3.5 rounded-full font-bold shadow-[0_0_20px_rgba(245,158,11,0.3)] transition-colors inline-block"
+                 >
+                   Enrol to Earn
+                 </motion.button>
+              </div>
+
+              {/* Certificate Image Side */}
+              <div className="w-full md:w-1/2 relative z-10 perspective-1000">
+                 <motion.div
+                   initial={{ opacity: 0, rotateY: 20, scale: 0.9 }}
+                   whileInView={{ opacity: 1, rotateY: 0, scale: 1 }}
+                   viewport={{ once: true }}
+                   transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
+                   whileHover={{ scale: 1.02, rotateY: -5, rotateX: 5 }}
+                   className="relative group p-2 bg-gradient-to-br from-white/10 to-white/5 rounded-2xl border border-white/10 shadow-2xl"
+                 >
+                    {/* Shimmer Effect */}
+                    <motion.div 
+                      className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent -translate-x-[150%] skew-x-[-20deg]"
+                      animate={{ translateX: ["-150%", "250%"] }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 1 }}
+                    />
+                    
+                    <img 
+                      src="https://www.image2url.com/r2/default/images/1776453057628-f141fba1-8b00-4d89-a816-f1eb05e93928.jpg" 
+                      alt="Bismahsoft Academy Certificate"
+                      className="w-full h-auto rounded-xl object-cover shadow-inner"
+                      referrerPolicy="no-referrer"
+                    />
+                 </motion.div>
+                 
+                 {/* Decorative float elements */}
+                 <motion.div 
+                   animate={{ y: [0, -10, 0] }} 
+                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                   className="absolute -right-4 -top-8 w-16 h-16 bg-amber-500/20 backdrop-blur-xl rounded-full border border-amber-500/30 flex items-center justify-center shadow-lg"
+                 >
+                   <Star className="text-amber-400 w-8 h-8" />
+                 </motion.div>
+              </div>
             </div>
           </section>
 
