@@ -943,11 +943,11 @@ function LandingPage() {
                 <h3 className="text-xl font-bold mb-6 text-gray-200">Minimum Setup</h3>
                 <ul className="space-y-4">
                   {[
-                    "Intel Core i5 (7th Gen) বা AMD Ryzen 5 or equivalent",
-                    "16GB RAM",
-                    "SSD (256GB বা তার বেশি) — বা তাহলে 2TB HDD ড্রাইভ",
-                    "Basic GPU / Integrated graphics",
-                    "Windows / macOS device"
+                    "যেকোনো সাধারণ Dual Core বা Core i3 প্রসেসর",
+                    "4GB - 8GB RAM (৪ জিবি হলেও শেখা শুরু করা যাবে)",
+                    "HDD ড্রাইভ (তবে অন্তত 128GB SSD থাকলে ভালো)",
+                    "সাধারণ Integrated Graphics (আলাদা গ্রাফিক্স কার্ড লাগবে না)",
+                    "Windows 10/11 বা macOS"
                   ].map((req, i) => (
                     <li key={i} className="flex p-4 bg-[#161a2b] border border-[#262c43] rounded-xl text-sm text-gray-300">
                       {req}
@@ -968,10 +968,10 @@ function LandingPage() {
                 <h3 className="text-xl font-bold mb-6 text-gray-200">Recommended Setup</h3>
                 <ul className="space-y-4">
                   {[
-                    "Intel Core i5 / Ryzen 5 or better",
-                    "32GB RAM or higher",
-                    "Dedicated GPU recommended",
-                    "Enough storage for design/video files",
+                    "Intel Core i5 বা AMD Ryzen 5 (বা সমমানের)",
+                    "8GB - 16GB RAM (স্মুথ কাজের জন্য)",
+                    "256GB SSD (সফটওয়্যার দ্রুত ওপেন এবং কাজের জন্য)",
+                    "Intel UHD বা Basic 2GB Graphics Card",
                     "Stable internet connection"
                   ].map((req, i) => (
                     <li key={i} className="flex p-4 bg-[#161a2b] border border-[#262c43] rounded-xl text-sm text-gray-300">
