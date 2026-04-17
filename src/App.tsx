@@ -35,7 +35,23 @@ import {
   Smartphone,
   CreditCard,
   Building2,
-  Wallet
+  Wallet,
+  Compass,
+  Type,
+  Pipette,
+  FileCode,
+  MonitorSmartphone,
+  Video,
+  Crosshair,
+  Ruler,
+  Activity,
+  Image as ImageIcon,
+  Dribbble,
+  Camera,
+  Box,
+  ShoppingCart,
+  Trophy,
+  Coffee
 } from "lucide-react";
 
 // --- Data ---
@@ -486,6 +502,33 @@ function EnrollmentPage() {
     </div>
   );
 }
+
+// --- Additional Resources Data ---
+const chromeExtensions = [
+  { name: "Muzli", url: "https://chromewebstore.google.com/detail/muzli", icon: <Compass className="w-6 h-6" /> },
+  { name: "WhatFont", url: "https://chromewebstore.google.com/detail/whatfont", icon: <Type className="w-6 h-6" /> },
+  { name: "Color Picker", url: "https://chromewebstore.google.com/detail/color-picker", icon: <Pipette className="w-6 h-6" /> },
+  { name: "SVG Export", url: "https://chromewebstore.google.com/detail/svg-export", icon: <FileCode className="w-6 h-6" /> },
+  { name: "Responsive Viewer", url: "https://chromewebstore.google.com/detail/responsive-viewer", icon: <MonitorSmartphone className="w-6 h-6" /> },
+  { name: "Loom", url: "https://chromewebstore.google.com/detail/loom", icon: <Video className="w-6 h-6" /> },
+  { name: "Fonts Ninja", url: "https://chromewebstore.google.com/detail/fonts-ninja", icon: <Type className="w-6 h-6" /> },
+  { name: "PerfectPixel", url: "https://chromewebstore.google.com/detail/perfectpixel", icon: <Crosshair className="w-6 h-6" /> },
+  { name: "Page Ruler", url: "https://chromewebstore.google.com/detail/page-ruler", icon: <Ruler className="w-6 h-6" /> },
+  { name: "Wappalyzer", url: "https://chromewebstore.google.com/detail/wappalyzer", icon: <Activity className="w-6 h-6" /> }
+];
+
+const designWebsites = [
+  { name: "Freepik", url: "https://www.freepik.com", icon: <ImageIcon className="w-6 h-6" /> },
+  { name: "Behance", url: "https://www.behance.net", icon: <Briefcase className="w-6 h-6" /> },
+  { name: "Dribbble", url: "https://dribbble.com", icon: <Dribbble className="w-6 h-6" /> },
+  { name: "Unsplash", url: "https://unsplash.com", icon: <Camera className="w-6 h-6" /> },
+  { name: "Pixeden", url: "https://www.pixeden.com", icon: <Box className="w-6 h-6" /> },
+  { name: "UI8", url: "https://ui8.net", icon: <Layers className="w-6 h-6" /> },
+  { name: "Mobbin", url: "https://mobbin.com", icon: <Smartphone className="w-6 h-6" /> },
+  { name: "Creative Market", url: "https://creativemarket.com", icon: <ShoppingCart className="w-6 h-6" /> },
+  { name: "Awwwards", url: "https://www.awwwards.com", icon: <Trophy className="w-6 h-6" /> },
+  { name: "GraphicBurger", url: "https://graphicburger.com", icon: <Coffee className="w-6 h-6" /> }
+];
 
 function LandingPage() {
   const navigate = useNavigate();
@@ -1073,6 +1116,96 @@ function LandingPage() {
                    </motion.button>
                  </div>
              </motion.div>
+          </section>
+
+          {/* Section 8: Resources & Inspiration (NEW) */}
+          <section id="resources" className="py-20 md:py-32 relative">
+             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] h-[500px] bg-violet-600/5 blur-[120px] rounded-full pointer-events-none"></div>
+             
+             <div className="max-w-7xl mx-auto px-6 relative z-10">
+                <div className="text-center mb-16 md:mb-24">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
+                    <Sparkles className="w-4 h-4 text-violet-400" />
+                    <span className="text-sm font-semibold tracking-wide text-gray-300">Designer's Toolkit</span>
+                  </div>
+                  <h2 className="text-3xl md:text-5xl font-black text-white mb-6 uppercase tracking-tighter">
+                    Essential <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-500">Resources</span>
+                  </h2>
+                  <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+                    A curated list of top Chrome extensions and design websites to supercharge your workflow and keep you inspired.
+                  </p>
+                </div>
+
+                <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
+                  {/* Chrome Extensions */}
+                  <div>
+                    <div className="flex items-center gap-3 mb-8">
+                       <div className="w-10 h-10 rounded-xl bg-[#262c43] flex items-center justify-center border border-white/10">
+                         <Component className="w-5 h-5 text-gray-300" />
+                       </div>
+                       <h3 className="text-2xl font-bold">10 Essential Extensions</h3>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {chromeExtensions.map((ext, index) => (
+                        <motion.a 
+                          key={index}
+                          href={ext.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          whileHover={{ scale: 1.03, y: -2 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="group bg-[#121626] border border-[#262c43] hover:border-violet-500/50 p-4 rounded-2xl flex items-center gap-4 transition-colors relative overflow-hidden"
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-r from-violet-500/0 via-violet-500/0 to-violet-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                          <div className="w-12 h-12 rounded-xl bg-[#1a1f33] group-hover:bg-violet-500/20 text-gray-400 group-hover:text-violet-400 flex items-center justify-center transition-colors">
+                            {ext.icon}
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-gray-200 group-hover:text-white transition-colors">{ext.name}</h4>
+                            <span className="text-xs text-violet-400 opacity-0 group-hover:opacity-100 transition-opacity absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                              Get <ExternalLink size={12} />
+                            </span>
+                          </div>
+                        </motion.a>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Websites & Inspiration */}
+                  <div>
+                    <div className="flex items-center gap-3 mb-8">
+                       <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-fuchsia-600/20 to-pink-500/20 flex items-center justify-center border border-fuchsia-500/30">
+                         <Star className="w-5 h-5 text-fuchsia-400" />
+                       </div>
+                       <h3 className="text-2xl font-bold">Design Resources</h3>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {designWebsites.map((site, index) => (
+                        <motion.a 
+                          key={index}
+                          href={site.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          whileHover={{ scale: 1.03, y: -2 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="group bg-[#121626] border border-[#262c43] hover:border-fuchsia-500/50 p-4 rounded-2xl flex items-center gap-4 transition-colors relative overflow-hidden"
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-r from-fuchsia-500/0 via-fuchsia-500/0 to-fuchsia-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                          <div className="w-12 h-12 rounded-xl bg-[#1a1f33] group-hover:bg-fuchsia-500/20 text-gray-400 group-hover:text-fuchsia-400 flex items-center justify-center transition-colors">
+                            {site.icon}
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-gray-200 group-hover:text-white transition-colors">{site.name}</h4>
+                            <span className="text-xs text-fuchsia-400 opacity-0 group-hover:opacity-100 transition-opacity absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                              Visit <ExternalLink size={12} />
+                            </span>
+                          </div>
+                        </motion.a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+             </div>
           </section>
 
         </div>
