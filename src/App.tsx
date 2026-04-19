@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FormEvent } from 'react';
+import React, { useState, useEffect, FormEvent, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   BrowserRouter as Router,
@@ -7,6 +7,9 @@ import {
   Link,
   useNavigate
 } from 'react-router-dom';
+import Confetti from 'react-confetti';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from './firebase';
 import { 
@@ -52,7 +55,10 @@ import {
   ShoppingCart,
   Trophy,
   Coffee,
-  Award
+  Award,
+  Target,
+  X,
+  BadgeCheck
 } from "lucide-react";
 
 // --- Data ---
@@ -531,6 +537,42 @@ const designWebsites = [
   { name: "GraphicBurger", url: "https://graphicburger.com", icon: <Coffee className="w-6 h-6" /> }
 ];
 
+export function MainNavbar() {
+  const navigate = useNavigate();
+  return (
+    <nav className="border-b border-[#262c43] bg-[#0d1017]/80 backdrop-blur-md sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-3">
+          <motion.div 
+            whileHover={{ rotate: 180, scale: 1.1 }}
+            transition={{ duration: 0.5 }}
+            className="w-8 h-8 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 flex items-center justify-center p-1.5"
+          >
+            <PenTool className="w-full h-full text-white" />
+          </motion.div>
+          <div className="font-bold text-lg tracking-tight">Bismahsoft Academy</div>
+        </Link>
+        <div className="hidden md:flex gap-8 text-sm font-semibold text-gray-200">
+          <a href="/#overview" className="hover:text-white transition-colors">Overview</a>
+          <a href="/#outcomes" className="hover:text-white transition-colors">কী শিখবেন</a>
+          <a href="/#curriculum" className="hover:text-white transition-colors">Curriculum</a>
+          <a href="/#requirements" className="hover:text-white transition-colors">Requirements</a>
+          <a href="/#ebook" className="hover:text-white transition-colors text-fuchsia-400">Ebook</a>
+          <a href="/#faq" className="hover:text-white transition-colors">FAQ</a>
+        </div>
+        <motion.button 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => navigate('/enroll')}
+          className="bg-gradient-to-r from-violet-600 to-fuchsia-500 hover:from-violet-500 hover:to-fuchsia-400 px-6 py-2 rounded-full text-sm font-semibold transition-all shadow-[0_0_15px_rgba(139,92,246,0.3)]"
+        >
+          এখুনি Join করুন
+        </motion.button>
+      </div>
+    </nav>
+  );
+}
+
 const islamicEbooks = [
   {
     title: "আল্লাহর প্রতি সুধারণা -ইমাম ইবনু আবিদ দুনইয়া",
@@ -563,6 +605,358 @@ const islamicEbooks = [
     originalPrice: "400"
   }
 ];
+
+const assessmentQuestions = [
+  "আমি সুন্দর ব্যাকগ্রাউন্ড বানাতে পারি।",
+  "আমি লোগো বানানোর সময় খুব সহজেই আইডিয়া পেয়ে যাই।",
+  "টাইপোগ্রাফি নিয়ে আমার কোনো ধরণের সমস্যা হয় না।",
+  "আমি ডিজাইনের বেসিক সব গ্রামার আগে থেকেই জানি।",
+  "আমার ডিজাইন প্রথমবারেই অ্যাপ্রুভ হয়ে যায়।",
+  "ফন্ট নিয়ে আমি কখনও ঝামেলায় পড়িনি।",
+  "আমি ফটোশপ ও ইলাস্ট্রেটর - উভয় সফটওয়্যারেই ডিজাইনের কাজ করতে পারি।",
+  "আমি পোস্টার, ইনফোগ্রাফিক, ব্যানার, লোগোসহ সব ধরনের ডিজাইন করতে পারি।",
+  "কালার কম্বিনেশন ঠিক করতে আমার কোনো সমস্যাই হয় না।",
+  "আমি ডিজাইন ফ্রিল্যান্সার হিসেবে অনেকগুলো কাজ ইতিমধ্যে করেছি।"
+];
+
+function AssessmentPage() {
+  const [step, setStep] = useState<'info' | 'questions' | 'result'>('info');
+  const [name, setName] = useState('');
+  const [designation, setDesignation] = useState('');
+  const [answers, setAnswers] = useState<(boolean | null)[]>(Array(10).fill(null));
+  
+  // Confetti setup
+  const [windowDimension, setWindowDimension] = useState({ width: window.innerWidth, height: window.innerHeight });
+
+  const certificateRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const detectSize = () => {
+      setWindowDimension({ width: window.innerWidth, height: window.innerHeight });
+    }
+    window.addEventListener('resize', detectSize);
+    return () => window.removeEventListener('resize', detectSize);
+  }, []);
+
+  const handleAnswer = (index: number, answer: boolean) => {
+    const newAnswers = [...answers];
+    newAnswers[index] = answer;
+    setAnswers(newAnswers);
+  };
+
+  const calculateScore = () => {
+    return answers.filter(a => a === true).length * 10;
+  };
+
+  const score = calculateScore();
+  const isPassed = score >= 80;
+
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleComplete = () => {
+    setStep('result');
+    if (score >= 80) {
+      // Play cheering sound
+      const audio = new Audio('https://www.myinstants.com/media/sounds/kids-cheering.mp3');
+      audio.play().catch(() => {/* safe handling */});
+    } else {
+      // Play sad sound
+      const audio = new Audio('https://www.myinstants.com/media/sounds/sad-trombone.mp3');
+      audio.play().catch(() => {/* safe handling */});
+    }
+  };
+
+  const handleDownloadImage = async () => {
+    if (!certificateRef.current || isDownloading) return;
+    try {
+      setIsDownloading(true);
+      const canvas = await html2canvas(certificateRef.current, { scale: 2, backgroundColor: '#0d1017', useCORS: true });
+      const image = canvas.toDataURL("image/jpeg", 1.0);
+      const link = document.createElement('a');
+      link.href = image;
+      link.download = `Bismahsoft-Assessment-${name.replace(/\s+/g, '-').toLowerCase()}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch(err) {
+      console.error("Failed to generate image", err);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!certificateRef.current || isDownloading) return;
+    try {
+      setIsDownloading(true);
+      const canvas = await html2canvas(certificateRef.current, { scale: 2, backgroundColor: '#0d1017', useCORS: true });
+      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [canvas.width, canvas.height]
+      });
+      pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
+      pdf.save(`Bismahsoft-Assessment-${name.replace(/\s+/g, '-').toLowerCase()}.pdf`);
+    } catch(err) {
+      console.error("Failed to generate PDF", err);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const allAnswered = answers.every(a => a !== null);
+
+  return (
+    <div className="min-h-screen bg-[#0d1017] text-white font-sans selection:bg-cyan-500/30 relative">
+      {step === 'result' && isPassed && (
+        <div className="fixed inset-0 z-50 pointer-events-none">
+          <Confetti 
+            width={windowDimension.width} 
+            height={windowDimension.height}
+            recycle={false}
+            numberOfPieces={400}
+            gravity={0.15}
+          />
+        </div>
+      )}
+
+      <MainNavbar />
+
+      <div className="max-w-4xl mx-auto px-6 py-16 text-center">
+        <div className="mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse"></span>
+            <span className="text-sm font-semibold tracking-wide text-cyan-400">Skill Evaluation</span>
+          </div>
+          <h1 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tighter uppercase italic">
+            Advanced Graphic Design
+          </h1>
+          <h2 className="text-xl md:text-2xl font-bold text-gray-400 mb-2">With AI Tools</h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 mx-auto rounded-full mt-6 mb-8"></div>
+        </div>
+
+        {step === 'info' && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-[#121626] border border-[#262c43] rounded-[2rem] p-8 md:p-12 shadow-2xl relative max-w-2xl mx-auto text-left"
+          >
+            <h3 className="text-2xl font-bold text-white mb-6">Let's get to know you first</h3>
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-bold text-gray-400 mb-2">Your Name</label>
+                <input 
+                  type="text" 
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full bg-[#0d1017] border border-[#262c43] rounded-xl px-5 py-4 focus:ring-1 focus:ring-cyan-500 outline-none transition-all placeholder:text-gray-700 font-medium"
+                  placeholder="e.g. Shakib"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-400 mb-2">What design field are you in?</label>
+                <input 
+                  type="text" 
+                  value={designation}
+                  onChange={(e) => setDesignation(e.target.value)}
+                  className="w-full bg-[#0d1017] border border-[#262c43] rounded-xl px-5 py-4 focus:ring-1 focus:ring-cyan-500 outline-none transition-all placeholder:text-gray-700 font-medium"
+                  placeholder="e.g. UX/UI Design, Print Media"
+                />
+              </div>
+            </div>
+            <div className="mt-8">
+              <motion.button 
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                disabled={!name || !designation}
+                onClick={() => setStep('questions')}
+                className="w-full bg-gradient-to-r from-cyan-600 to-cyan-400 text-white py-4 rounded-xl font-bold text-lg disabled:opacity-50 transition-all shadow-[0_10px_30px_rgba(6,182,212,0.3)]"
+              >
+                Proceed to Questions
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+
+        {step === 'questions' && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-[#121626] border border-[#262c43] rounded-[2rem] p-6 md:p-12 shadow-2xl relative text-left"
+          >
+            <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-600/5 rounded-full blur-[80px] pointer-events-none"></div>
+
+            <div className="space-y-6 relative z-10">
+              {assessmentQuestions.map((q, idx) => (
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  key={idx} 
+                  className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/5 transition-colors"
+                >
+                  <div className="flex items-center gap-2 shrink-0">
+                     <button 
+                       onClick={() => handleAnswer(idx, true)}
+                       className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold transition-all border ${answers[idx] === true ? 'bg-green-600 text-white border-green-500 shadow-[0_0_15px_rgba(22,163,74,0.4)]' : 'bg-[#1a1f33] text-gray-400 border-[#262c43] hover:border-green-500 hover:text-green-500'}`}
+                     >
+                       হ্যাঁ
+                     </button>
+                     <button 
+                       onClick={() => handleAnswer(idx, false)}
+                       className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold transition-all border ${answers[idx] === false ? 'bg-red-600 text-white border-red-500 shadow-[0_0_15px_rgba(220,38,38,0.4)]' : 'bg-[#1a1f33] text-gray-400 border-[#262c43] hover:border-red-500 hover:text-red-500'}`}
+                     >
+                       না
+                     </button>
+                  </div>
+                  <p className="text-gray-300 text-lg font-medium leading-relaxed">{q}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="mt-12 text-center pt-8 border-t border-[#262c43]">
+               <motion.button 
+                  whileHover={allAnswered ? { scale: 1.05 } : {}}
+                  whileTap={allAnswered ? { scale: 0.95 } : {}}
+                  onClick={handleComplete}
+                  disabled={!allAnswered}
+                  className="bg-gradient-to-r from-cyan-600 to-blue-500 text-white px-10 py-4 rounded-full font-bold shadow-xl disabled:opacity-50 disabled:grayscale transition-all"
+               >
+                 Submit & See Results
+               </motion.button>
+            </div>
+          </motion.div>
+        )}
+
+        {step === 'result' && (
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center"
+          >
+            {/* Visual Emotion feedback */}
+            <div className="mb-8">
+              {isPassed ? (
+                <motion.div 
+                  initial={{ scale: 0, rotate: -45 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ type: "spring", bounce: 0.5 }}
+                  className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center border-4 border-green-500 text-5xl mx-auto shadow-[0_0_40px_rgba(34,197,94,0.4)]"
+                >
+                  🎉
+                </motion.div>
+              ) : (
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="w-24 h-24 bg-red-500/20 rounded-full flex items-center justify-center border-4 border-red-500 text-5xl mx-auto shadow-[0_0_40px_rgba(239,68,68,0.4)]"
+                >
+                  🥺
+                </motion.div>
+              )}
+            </div>
+
+            {/* Assessment Certificate Block (Target for html2canvas) */}
+            <div 
+              ref={certificateRef}
+              className="bg-[#121626] border border-amber-500/20 w-full max-w-4xl p-12 md:p-16 rounded-[2.5rem] relative overflow-hidden shadow-2xl mb-10"
+              style={{ backgroundColor: '#121626' }}
+            >
+              {/* html2canvas compatible gradient glow */}
+              <div className="absolute -top-[20%] -right-[10%] w-[40rem] h-[40rem] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-600/10 via-transparent to-transparent pointer-events-none"></div>
+              
+              {/* Certificate Header */}
+              <div className="text-center relative z-10 border-b border-amber-500/20 pb-10 mb-10">
+                 <div className="flex justify-center mb-6">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 flex items-center justify-center shadow-lg">
+                      <Target className="text-[#121626] w-8 h-8" />
+                    </div>
+                 </div>
+                 <h1 className="text-4xl md:text-5xl font-black mb-3 text-white uppercase tracking-widest font-serif">Certificate of Assessment</h1>
+                 <p className="text-amber-400 font-bold tracking-[0.2em] uppercase text-sm">Bismahsoft Academy · Skill Evaluation</p>
+              </div>
+
+              {/* Recipient Details */}
+              <div className="text-center relative z-10 mb-12 space-y-4">
+                 <p className="text-gray-400 italic text-lg">This certifies that</p>
+                 <h2 className="text-4xl font-black text-white capitalize">{name}</h2>
+                 <p className="text-gray-300 font-medium tracking-wider uppercase text-sm">[{designation}]</p>
+                 <p className="text-gray-400 italic text-lg mt-4">has successfully completed the Graphic Design Assessment</p>
+              </div>
+
+              {/* Score Block */}
+              <div className="bg-[#0a0c12] border border-amber-500/20 rounded-3xl p-8 text-center mb-12 flex flex-col items-center justify-center relative z-10 shadow-inner">
+                  <h4 className="text-xl font-medium text-gray-400 mb-4 uppercase tracking-widest">Graphic Design Skill Level</h4>
+                  <div className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-400">
+                    {score}%
+                  </div>
+                  <p className="text-gray-500 mt-2 font-medium">({score} / 100 Marks Obtained)</p>
+              </div>
+              
+              {/* Footer / Signatures */}
+              <div className="text-center border-t border-amber-500/20 pt-10 relative z-10 flex flex-col md:flex-row justify-between items-end px-4">
+                  <div className="text-left mb-6 md:mb-0">
+                     <p className="text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold flex items-center gap-2">
+                        Assessed & Verified By
+                        <BadgeCheck className="text-blue-500 w-4 h-4" />
+                     </p>
+                     <div className="font-black text-2xl text-white tracking-tight">Bismahsoft Academy</div>
+                     <p className="text-sm text-amber-500 mt-1 mb-2">Official Skill Evaluation</p>
+                     <p className="text-xs text-gray-400 font-medium tracking-wider">Date: {new Date().toLocaleDateString('en-GB')}</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="inline-block border-b border-amber-500/30 pb-2 mb-2 px-8">
+                       {/* Professional Signature */}
+                       <h5 className="text-5xl text-amber-400" style={{ fontFamily: "var(--font-signature)", fontWeight: 400 }}>Shakibul Islam</h5>
+                    </div>
+                    <p className="text-sm font-bold text-gray-300 uppercase tracking-[0.1em] mt-1" style={{ fontFamily: "var(--font-sans)" }}>সাকিবুল ইসলাম সাব্বির</p>
+                    <p className="text-[10px] font-bold text-amber-500 uppercase tracking-widest mt-1">Course Instructor</p>
+                  </div>
+              </div>
+            </div>
+
+            {/* Actions Menu */}
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <motion.button
+                whileHover={!isDownloading ? { scale: 1.05 } : {}}
+                whileTap={!isDownloading ? { scale: 0.95 } : {}}
+                onClick={handleDownloadImage}
+                disabled={isDownloading}
+                className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-8 py-3 rounded-xl font-semibold flex items-center gap-2 transition-all shadow-[0_10px_20px_rgba(0,0,0,0.3)] disabled:opacity-50"
+              >
+                <ImageIcon size={18} /> {isDownloading ? 'Processing...' : 'Download as JPG'}
+              </motion.button>
+              
+              <motion.button
+                whileHover={!isDownloading ? { scale: 1.05 } : {}}
+                whileTap={!isDownloading ? { scale: 0.95 } : {}}
+                onClick={handleDownloadPDF}
+                disabled={isDownloading}
+                className="bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-500 hover:to-blue-400 text-white border-none px-8 py-3 rounded-xl font-semibold flex items-center gap-2 transition-all shadow-[0_10px_20px_rgba(6,182,212,0.3)] disabled:opacity-50"
+              >
+                <FileCode size={18} /> {isDownloading ? 'Processing...' : 'Download as PDF'}
+              </motion.button>
+
+              <motion.button
+                 onClick={() => {
+                   setStep('info');
+                   setAnswers(Array(10).fill(null));
+                 }}
+                 disabled={isDownloading}
+                 className="text-gray-400 hover:text-white px-4 py-3 ml-2 text-sm font-bold uppercase tracking-widest transition-colors disabled:opacity-50"
+              >
+                 Retake Test
+              </motion.button>
+            </div>
+
+          </motion.div>
+        )}
+
+      </div>
+    </div>
+  );
+}
 
 function LandingPage() {
   const navigate = useNavigate();
@@ -626,36 +1020,7 @@ function LandingPage() {
   return (
     <div className="min-h-screen bg-[#0d1017] text-white font-sans selection:bg-violet-500/30">
       {/* Navbar */}
-      <nav className="border-b border-[#262c43] bg-[#0d1017]/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <motion.div 
-              whileHover={{ rotate: 180, scale: 1.1 }}
-              transition={{ duration: 0.5 }}
-              className="w-8 h-8 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 flex items-center justify-center p-1.5"
-            >
-              <PenTool className="w-full h-full text-white" />
-            </motion.div>
-            <div className="font-bold text-lg tracking-tight">Bismahsoft Academy</div>
-          </div>
-          <div className="hidden md:flex gap-8 text-sm font-semibold text-gray-200">
-            <a href="#overview" className="hover:text-white transition-colors">Overview</a>
-            <a href="#outcomes" className="hover:text-white transition-colors">কী শিখবেন</a>
-            <a href="#curriculum" className="hover:text-white transition-colors">Curriculum</a>
-            <a href="#requirements" className="hover:text-white transition-colors">Requirements</a>
-            <a href="#ebook" className="hover:text-white transition-colors text-fuchsia-400">Ebook</a>
-            <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
-          </div>
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => navigate('/enroll')}
-            className="bg-gradient-to-r from-violet-600 to-fuchsia-500 hover:from-violet-500 hover:to-fuchsia-400 px-6 py-2 rounded-full text-sm font-semibold transition-all shadow-[0_0_15px_rgba(139,92,246,0.3)]"
-          >
-            এখুনি Join করুন
-          </motion.button>
-        </div>
-      </nav>
+      <MainNavbar />
 
       <main className="relative w-full flex flex-col items-center">
         {/* Glow Effects */}
@@ -1078,6 +1443,72 @@ function LandingPage() {
                    className="absolute -right-4 -top-8 w-16 h-16 bg-amber-500/20 backdrop-blur-xl rounded-full border border-amber-500/30 flex items-center justify-center shadow-lg"
                  >
                    <Star className="text-amber-400 w-8 h-8" />
+                 </motion.div>
+              </div>
+            </div>
+          </section>
+
+          {/* Section: Designer Assessment Splash */}
+          <section id="assessment-splash" className="w-full max-w-5xl mx-auto pt-10 pb-16 scroll-mt-24">
+            <div className="bg-gradient-to-br from-[#161a2b] to-[#0d1017] border border-cyan-500/20 rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative overflow-hidden flex flex-col md:flex-row-reverse gap-10 items-center">
+              
+              {/* Background Glow */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+              
+              {/* Text Side */}
+              <div className="w-full md:w-1/2 relative z-10 text-right">
+                 <div className="inline-flex flex-row-reverse items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-6">
+                    <Target className="w-4 h-4 text-cyan-400" />
+                    <span className="text-sm font-semibold tracking-wide text-cyan-300">Designer Assessment</span>
+                 </div>
+                 <h2 className="text-3xl md:text-5xl font-black text-white mb-6 tracking-tighter w-full text-right">
+                    Test Your <span className="text-transparent bg-clip-text bg-gradient-to-l from-cyan-400 to-blue-500">Skills</span>
+                 </h2>
+                 <p className="text-gray-300 text-lg leading-relaxed mb-6 font-medium border-r-4 border-cyan-500/50 pr-4 w-full text-right inline-block">
+                    গ্রাফিক ডিজাইনে আপনি কতটা জানেন বা আপনার দক্ষতা কতটুকু, সেটি আপনি এখনই মাত্র ১০টি প্রশ্নের মাধ্যমে যাচাই করে দেখতে পারেন।
+                 </p>
+                 <motion.button 
+                   whileHover={{ scale: 1.05 }} 
+                   whileTap={{ scale: 0.95 }} 
+                   onClick={() => navigate('/assessment')}
+                   className="bg-cyan-500 hover:bg-cyan-400 text-[#0d1017] px-8 py-3.5 rounded-full font-bold shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-colors inline-block md:float-right"
+                 >
+                   Start Assessment
+                 </motion.button>
+              </div>
+
+              {/* Assessment Image Side */}
+              <div className="w-full md:w-1/2 relative z-10 perspective-1000">
+                 <motion.div
+                   initial={{ opacity: 0, rotateY: -20, scale: 0.9 }}
+                   whileInView={{ opacity: 1, rotateY: 0, scale: 1 }}
+                   viewport={{ once: true }}
+                   transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
+                   whileHover={{ scale: 1.02, rotateY: 5, rotateX: 5 }}
+                   className="relative group p-2 bg-gradient-to-bl from-white/10 to-white/5 rounded-2xl border border-white/10 shadow-2xl"
+                 >
+                    {/* Shimmer Effect */}
+                    <motion.div 
+                      className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent -translate-x-[150%] skew-x-[20deg]"
+                      animate={{ translateX: ["-150%", "250%"] }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 1 }}
+                    />
+                    
+                    <img 
+                      src="https://www.image2url.com/r2/default/images/1776586976605-a4758b38-2fbb-4860-9c6e-19a65a7fa0a2.png" 
+                      alt="Assessment Tracker"
+                      className="w-full h-auto rounded-xl object-contain shadow-inner bg-[#fff]"
+                      referrerPolicy="no-referrer"
+                    />
+                 </motion.div>
+                 
+                 {/* Decorative float elements */}
+                 <motion.div 
+                   animate={{ y: [0, -10, 0] }} 
+                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                   className="absolute -left-4 -bottom-4 w-12 h-12 bg-cyan-500/20 backdrop-blur-xl rounded-full border border-cyan-500/30 flex items-center justify-center shadow-lg"
+                 >
+                   <Target className="text-cyan-400 w-6 h-6" />
                  </motion.div>
               </div>
             </div>
@@ -1600,6 +2031,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/enroll" element={<EnrollmentPage />} />
+        <Route path="/assessment" element={<AssessmentPage />} />
       </Routes>
     </Router>
   );
