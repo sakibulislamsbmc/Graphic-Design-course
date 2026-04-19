@@ -978,6 +978,85 @@ function AssessmentPage() {
   );
 }
 
+function CountdownTimer({ targetDate }: { targetDate: string }) {
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  useEffect(() => {
+    const target = new Date(targetDate).getTime();
+    
+    // Initial calculate before interval
+    const calculateTimeLeft = () => {
+      const now = new Date().getTime();
+      const distance = target - now;
+      if (distance <= 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return true; // Done
+      }
+      setTimeLeft({
+        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((distance % (1000 * 60)) / 1000),
+      });
+      return false; // Not done
+    };
+    
+    calculateTimeLeft();
+    
+    const interval = setInterval(() => {
+      const isDone = calculateTimeLeft();
+      if (isDone) clearInterval(interval);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [targetDate]);
+
+  return (
+    <div className="flex flex-col items-center p-5 bg-gradient-to-br from-pink-500/10 via-fuchsia-500/10 to-transparent border border-pink-500/30 rounded-2xl mb-6 shadow-[0_0_20px_rgba(236,72,153,0.15)] relative overflow-hidden">
+       {/* Decorative glow */}
+       <div className="absolute -top-10 -right-10 w-24 h-24 bg-pink-500/20 blur-xl rounded-full"></div>
+       <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-fuchsia-500/20 blur-xl rounded-full"></div>
+       
+       <span className="text-xs font-black uppercase tracking-[0.2em] text-pink-400 mb-3 relative z-10">Admission Deadline</span>
+       
+       <div className="flex gap-3 sm:gap-4 text-center relative z-10 w-full justify-center">
+         <div className="flex flex-col items-center bg-black/20 w-14 py-2 rounded-lg border border-white/5">
+            <span className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-pink-300">
+              {timeLeft.days.toString().padStart(2, '0')}
+            </span>
+            <span className="text-[9px] sm:text-[10px] text-pink-200/70 uppercase font-bold tracking-wider mt-1">Days</span>
+         </div>
+         <span className="text-2xl sm:text-3xl font-black text-pink-500/50 mt-1">:</span>
+         <div className="flex flex-col items-center bg-black/20 w-14 py-2 rounded-lg border border-white/5">
+            <span className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-pink-300">
+              {timeLeft.hours.toString().padStart(2, '0')}
+            </span>
+            <span className="text-[9px] sm:text-[10px] text-pink-200/70 uppercase font-bold tracking-wider mt-1">Hrs</span>
+         </div>
+         <span className="text-2xl sm:text-3xl font-black text-pink-500/50 mt-1">:</span>
+         <div className="flex flex-col items-center bg-black/20 w-14 py-2 rounded-lg border border-white/5">
+            <span className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-pink-300">
+              {timeLeft.minutes.toString().padStart(2, '0')}
+            </span>
+            <span className="text-[9px] sm:text-[10px] text-pink-200/70 uppercase font-bold tracking-wider mt-1">Mins</span>
+         </div>
+         <span className="text-2xl sm:text-3xl font-black text-pink-500/50 mt-1">:</span>
+         <div className="flex flex-col items-center bg-black/20 w-14 py-2 rounded-lg border border-white/5">
+            <span className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-pink-300">
+              {timeLeft.seconds.toString().padStart(2, '0')}
+            </span>
+            <span className="text-[9px] sm:text-[10px] text-pink-200/70 uppercase font-bold tracking-wider mt-1">Secs</span>
+         </div>
+       </div>
+    </div>
+  );
+}
+
 function LandingPage() {
   const navigate = useNavigate();
   // Legacy single boolean swapped to track the active book metadata or string ID
@@ -1172,6 +1251,10 @@ function LandingPage() {
 
                 {/* Pricing Box */}
                 <div className="bg-[#161a2b] border border-[#262c43] rounded-[1.5rem] p-6 lg:p-8">
+                  
+                  {/* Countdown Timer */}
+                  <CountdownTimer targetDate="2026-05-15T23:59:59+06:00" />
+
                   <div className="flex flex-wrap items-center gap-4 mb-6">
                     <div className="flex flex-col">
                       <h2 className="text-4xl font-bold text-white tracking-tight">৳6,000</h2>
