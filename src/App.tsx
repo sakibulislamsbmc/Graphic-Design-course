@@ -666,11 +666,25 @@ function AssessmentPage() {
     }
   };
 
+  const generateCanvas = async () => {
+    if (!certificateRef.current) return null;
+    // Wait for all fonts (like the Alex Brush signature) to fully load before capturing
+    await document.fonts.ready;
+    return await html2canvas(certificateRef.current, { 
+      scale: 2, 
+      backgroundColor: '#121626', 
+      useCORS: true, 
+      allowTaint: true 
+    });
+  };
+
   const handleDownloadImage = async () => {
-    if (!certificateRef.current || isDownloading) return;
+    if (isDownloading) return;
     try {
       setIsDownloading(true);
-      const canvas = await html2canvas(certificateRef.current, { scale: 2, backgroundColor: '#0d1017', useCORS: true });
+      const canvas = await generateCanvas();
+      if (!canvas) return;
+      
       const image = canvas.toDataURL("image/jpeg", 1.0);
       const link = document.createElement('a');
       link.href = image;
@@ -686,10 +700,12 @@ function AssessmentPage() {
   };
 
   const handleDownloadPDF = async () => {
-    if (!certificateRef.current || isDownloading) return;
+    if (isDownloading) return;
     try {
       setIsDownloading(true);
-      const canvas = await html2canvas(certificateRef.current, { scale: 2, backgroundColor: '#0d1017', useCORS: true });
+      const canvas = await generateCanvas();
+      if (!canvas) return;
+
       const imgData = canvas.toDataURL('image/jpeg', 1.0);
       const pdf = new jsPDF({
         orientation: 'landscape',
@@ -860,16 +876,20 @@ function AssessmentPage() {
             {/* Assessment Certificate Block (Target for html2canvas) */}
             <div 
               ref={certificateRef}
-              className="bg-[#121626] border border-amber-500/20 w-full max-w-4xl p-12 md:p-16 rounded-[2.5rem] relative overflow-hidden shadow-2xl mb-10"
-              style={{ backgroundColor: '#121626' }}
+              className="w-full max-w-4xl p-12 md:p-16 relative overflow-hidden shadow-2xl mb-10"
+              style={{ backgroundColor: '#121626', borderRadius: '2.5rem', fontFamily: '"Hind Siliguri", sans-serif' }}
             >
+              {/* Premium Inner Borders to simulate a real certificate frame */}
+              <div className="absolute inset-4 border-4 border-amber-500/20 rounded-[2rem] pointer-events-none"></div>
+              <div className="absolute inset-6 border border-amber-500/30 rounded-[1.5rem] pointer-events-none"></div>
+
               {/* html2canvas compatible gradient glow */}
               <div className="absolute -top-[20%] -right-[10%] w-[40rem] h-[40rem] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-600/10 via-transparent to-transparent pointer-events-none"></div>
               
               {/* Certificate Header */}
               <div className="text-center relative z-10 border-b border-amber-500/20 pb-10 mb-10">
                  <div className="flex justify-center mb-6">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 flex items-center justify-center shadow-lg">
+                    <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(to right, #f59e0b, #facc15)' }}>
                       <Target className="text-[#121626] w-8 h-8" />
                     </div>
                  </div>
@@ -879,39 +899,39 @@ function AssessmentPage() {
 
               {/* Recipient Details */}
               <div className="text-center relative z-10 mb-12 space-y-4">
-                 <p className="text-gray-400 italic text-lg">This certifies that</p>
+                 <p className="text-gray-400 italic text-lg text-[#9ca3af]">This certifies that</p>
                  <h2 className="text-4xl font-black text-white capitalize">{name}</h2>
                  <p className="text-gray-300 font-medium tracking-wider uppercase text-sm">[{designation}]</p>
-                 <p className="text-gray-400 italic text-lg mt-4">has successfully completed the Graphic Design Assessment</p>
+                 <p className="text-gray-400 italic text-lg text-[#9ca3af] mt-4">has successfully completed the Graphic Design Assessment</p>
               </div>
 
               {/* Score Block */}
-              <div className="bg-[#0a0c12] border border-amber-500/20 rounded-3xl p-8 text-center mb-12 flex flex-col items-center justify-center relative z-10 shadow-inner">
-                  <h4 className="text-xl font-medium text-gray-400 mb-4 uppercase tracking-widest">Graphic Design Skill Level</h4>
-                  <div className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-400">
+              <div className="rounded-3xl p-8 text-center mb-12 flex flex-col items-center justify-center relative z-10 shadow-inner border border-amber-500/20" style={{ backgroundColor: '#0a0c12' }}>
+                  <h4 className="text-xl font-medium mb-4 uppercase tracking-widest text-[#9ca3af]">Graphic Design Skill Level</h4>
+                  <div className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-400" style={{ color: '#facc15' }}>
                     {score}%
                   </div>
-                  <p className="text-gray-500 mt-2 font-medium">({score} / 100 Marks Obtained)</p>
+                  <p className="text-[#6b7280] mt-2 font-medium">({score} / 100 Marks Obtained)</p>
               </div>
               
               {/* Footer / Signatures */}
               <div className="text-center border-t border-amber-500/20 pt-10 relative z-10 flex flex-col md:flex-row justify-between items-end px-4">
                   <div className="text-left mb-6 md:mb-0">
-                     <p className="text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold flex items-center gap-2">
+                     <p className="text-xs text-[#6b7280] uppercase tracking-widest mb-2 font-bold flex items-center gap-2">
                         Assessed & Verified By
                         <BadgeCheck className="text-blue-500 w-4 h-4" />
                      </p>
                      <div className="font-black text-2xl text-white tracking-tight">Bismahsoft Academy</div>
-                     <p className="text-sm text-amber-500 mt-1 mb-2">Official Skill Evaluation</p>
-                     <p className="text-xs text-gray-400 font-medium tracking-wider">Date: {new Date().toLocaleDateString('en-GB')}</p>
+                     <p className="text-sm font-bold mt-1 mb-2" style={{ color: '#f59e0b' }}>Official Skill Evaluation</p>
+                     <p className="text-xs text-[#9ca3af] font-medium tracking-wider">Date: {new Date().toLocaleDateString('en-GB')}</p>
                   </div>
                   <div className="text-right">
                     <div className="inline-block border-b border-amber-500/30 pb-2 mb-2 px-8">
                        {/* Professional Signature */}
-                       <h5 className="text-5xl text-amber-400" style={{ fontFamily: "var(--font-signature)", fontWeight: 400 }}>Shakibul Islam</h5>
+                       <h5 className="text-5xl" style={{ color: '#fbbf24', fontFamily: "'Alex Brush', cursive", fontWeight: 400 }}>Shakibul Islam</h5>
                     </div>
-                    <p className="text-sm font-bold text-gray-300 uppercase tracking-[0.1em] mt-1" style={{ fontFamily: "var(--font-sans)" }}>সাকিবুল ইসলাম সাব্বির</p>
-                    <p className="text-[10px] font-bold text-amber-500 uppercase tracking-widest mt-1">Course Instructor</p>
+                    <p className="text-sm font-bold text-gray-300 uppercase tracking-[0.1em] mt-1">সাকিবুল ইসলাম সাব্বির</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest mt-1" style={{ color: '#f59e0b' }}>Course Instructor</p>
                   </div>
               </div>
             </div>
