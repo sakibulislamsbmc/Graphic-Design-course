@@ -531,22 +531,56 @@ const designWebsites = [
   { name: "GraphicBurger", url: "https://graphicburger.com", icon: <Coffee className="w-6 h-6" /> }
 ];
 
+const islamicEbooks = [
+  {
+    title: "আল্লাহর প্রতি সুধারণা -ইমাম ইবনু আবিদ দুনইয়া",
+    imgUrl: "https://www.image2url.com/r2/default/images/1776584776194-5efc7a00-29f1-44d3-893a-86027f89d40c.webp",
+    pdfId: "1fyh2bs_ZreUjiyYcBGbgtbM8e3jZ2hHN",
+    originalPrice: "300"
+  },
+  {
+    title: "রাসূলুল্লাহ (সঃ) এর সকাল-সন্ধ্যার দু'আ ও যিকর",
+    imgUrl: "https://www.image2url.com/r2/default/images/1776585610178-f1901858-b26f-40f1-9247-480c37b8be53.jpg",
+    pdfId: "1_Uoaxqg2MJ1igbgQw99a2tGAymzCY4h4",
+    originalPrice: "50"
+  },
+  {
+    title: "মুমিনের_ক্যারিয়ার_ভাবনা",
+    imgUrl: "https://www.image2url.com/r2/default/images/1776585579242-65e31148-4ebf-4243-8050-7cec27ecaced.webp",
+    pdfId: "1K_qlXTlwnGQxufD5w3ntyy0tvWGs2Gos",
+    originalPrice: "500"
+  },
+  {
+    title: "ফুল হয়ে ফোটো -শাইখ আহমাদ মুসা জিবরিল (হাফি.) ও মোহাম্মাদ হোবলস",
+    imgUrl: "https://www.image2url.com/r2/default/images/1776585536751-3b446f00-8083-4cd2-91ea-504ca3618b52.webp",
+    pdfId: "1U4qhjkWMSiwhe9_hyq0Fghvn3kUildOr",
+    originalPrice: "1050"
+  },
+  {
+    title: "এবার_ভিন্ন_কিছু_হোক",
+    imgUrl: "https://www.image2url.com/r2/default/images/1776585393309-b40d82d2-92c1-435d-acfd-6c9a9f731592.webp",
+    pdfId: "1E5sW81zPG713ksSNwo7W8uTSiAtvovk4",
+    originalPrice: "400"
+  }
+];
+
 function LandingPage() {
   const navigate = useNavigate();
-  const [isEbookPreviewOpen, setIsEbookPreviewOpen] = useState(false);
-  const [isFullReaderOpen, setIsFullReaderOpen] = useState(false);
+  // Legacy single boolean swapped to track the active book metadata or string ID
+  const [activePreviewBook, setActivePreviewBook] = useState<{title: string, pdfId: string} | null>(null);
+  const [activeFullReaderBook, setActiveFullReaderBook] = useState<{title: string, pdfId: string} | null>(null);
   const [isPrivacyActive, setIsPrivacyActive] = useState(false);
 
   // Advanced Security: Visibility and Focus Monitoring
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'hidden' && (isFullReaderOpen || isEbookPreviewOpen)) {
+      if (document.visibilityState === 'hidden' && (activeFullReaderBook || activePreviewBook)) {
         setIsPrivacyActive(true);
       }
     };
 
     const handleBlur = () => {
-      if (isFullReaderOpen || isEbookPreviewOpen) {
+      if (activeFullReaderBook || activePreviewBook) {
         setIsPrivacyActive(true);
       }
     };
@@ -582,7 +616,7 @@ function LandingPage() {
       window.removeEventListener('focus', handleFocus);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isFullReaderOpen, isEbookPreviewOpen]);
+  }, [activeFullReaderBook, activePreviewBook]);
 
   // Function to prevent right-click on the viewer
   const handleContextMenu = (e: React.MouseEvent) => {
@@ -1115,7 +1149,7 @@ function LandingPage() {
                   <motion.button 
                     whileHover={{ scale: 1.05 }} 
                     whileTap={{ scale: 0.95 }} 
-                    onClick={() => setIsFullReaderOpen(true)}
+                    onClick={() => setActiveFullReaderBook({title: "The Ultimate Graphic Design Guide", pdfId: "1EeI7kGc0NdzWszQn1Cd6nEagjEOLdChv"})}
                     className="flex-1 bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white px-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-[0_10px_30px_rgba(217,70,239,0.3)] transition-all"
                   >
                     <Wallet size={18} /> ফ্রীতে পড়ুন
@@ -1124,13 +1158,73 @@ function LandingPage() {
                   <motion.button 
                     whileHover={{ scale: 1.05 }} 
                     whileTap={{ scale: 0.95 }} 
-                    onClick={() => setIsEbookPreviewOpen(true)}
+                    onClick={() => setActivePreviewBook({title: "The Ultimate Graphic Design Guide", pdfId: "1EeI7kGc0NdzWszQn1Cd6nEagjEOLdChv"})}
                     className="flex-1 bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#20bd5a] hover:to-[#0f776a] border-none text-white px-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-[0_10px_30px_rgba(37,211,102,0.3)] transition-all"
                   >
                     <BookOpen size={18} /> Read a little first
                   </motion.button>
                 </div>
               </div>
+            </div>
+          </section>
+
+          {/* Section: Islamic Ebooks (Self-Improvement Resources) */}
+          <section id="islamic-ebooks" className="w-full max-w-5xl mx-auto pt-16 scroll-mt-24">
+            <SectionBadge text="Self-Improvement Resources" />
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight">Islamic eBooks Collection</h2>
+            <p className="text-gray-400 max-w-3xl leading-relaxed text-lg mb-12">
+              জীবন গড়ার নির্দেশিকা এবং অনুপ্রেরণামূলক ইসলামিক বইয়ের সংগ্রহ। সম্পূর্ণ ফ্রিতে পড়াশোনা করুন।
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {islamicEbooks.map((book, idx) => (
+                <div key={idx} className="bg-[#121626] border border-[#262c43] rounded-[2rem] p-6 shadow-xl flex flex-col items-center text-center group hover:bg-[#161a2b] transition-colors relative overflow-hidden">
+                  
+                  {/* Internal Glow on Hover */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-fuchsia-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+
+                  <div className="w-full aspect-[3/4] max-w-[200px] mb-6 relative perspective-1000 z-10">
+                    <motion.div 
+                      whileHover={{ rotateY: 10, scale: 1.05 }}
+                      className="w-full h-full rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] transform-style-3d cursor-pointer"
+                    >
+                      <img 
+                        src={book.imgUrl} 
+                        alt={book.title} 
+                        className="w-full h-full object-cover rounded-xl border border-white/5"
+                        referrerPolicy="no-referrer"
+                      />
+                    </motion.div>
+                  </div>
+
+                  <h3 className="text-lg font-bold text-white mb-3 min-h-[56px] flex items-center justify-center z-10">{book.title}</h3>
+                  
+                  <div className="flex justify-center items-center gap-2 mb-6 z-10">
+                    <span className="text-sm font-bold text-gray-500 line-through">BDT {book.originalPrice}</span>
+                    <span className="text-xl font-black text-emerald-400">FREE</span>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3 w-full mt-auto z-10">
+                    <motion.button 
+                      whileHover={{ scale: 1.03 }} 
+                      whileTap={{ scale: 0.97 }} 
+                      onClick={() => setActiveFullReaderBook({ title: book.title, pdfId: book.pdfId })}
+                      className="flex-[2] bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white py-3 px-2 rounded-xl font-bold flex items-center justify-center gap-2 shadow-[0_5px_15px_rgba(217,70,239,0.3)] transition-all text-sm"
+                    >
+                      <Wallet size={16} /> Read Full
+                    </motion.button>
+
+                    <motion.button 
+                      whileHover={{ scale: 1.03 }} 
+                      whileTap={{ scale: 0.97 }} 
+                      onClick={() => setActivePreviewBook({ title: book.title, pdfId: book.pdfId })}
+                      className="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white py-3 px-2 rounded-xl font-bold flex items-center justify-center gap-2 transition-all text-sm"
+                    >
+                      Preview
+                    </motion.button>
+                  </div>
+                </div>
+              ))}
             </div>
           </section>
 
@@ -1328,13 +1422,13 @@ function LandingPage() {
 
       {/* Ebook Preview Modal (Limited Pages) */}
       <AnimatePresence>
-        {isEbookPreviewOpen && (
+        {activePreviewBook && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setIsEbookPreviewOpen(false)}
+              onClick={() => setActivePreviewBook(null)}
               className="absolute inset-0 bg-[#000000]/80 backdrop-blur-sm"
             />
             <motion.div 
@@ -1346,11 +1440,11 @@ function LandingPage() {
             >
               <div className="flex items-center justify-between p-6 border-b border-[#262c43] bg-[#0d1017]">
                  <div>
-                    <h3 className="font-bold text-white text-xl uppercase tracking-tighter italic">Preview: Graphic Design Guide</h3>
+                    <h3 className="font-bold text-white text-xl uppercase tracking-tighter italic">Preview: {activePreviewBook.title}</h3>
                     <p className="text-sm text-gray-400">Read first 5-6 pages (Table of Contents & Intro)</p>
                  </div>
                  <button 
-                  onClick={() => setIsEbookPreviewOpen(false)}
+                  onClick={() => setActivePreviewBook(null)}
                   className="w-10 h-10 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center transition-colors"
                  >
                    <Minus className="w-5 h-5 text-gray-400 cursor-pointer rotate-45" />
@@ -1362,7 +1456,7 @@ function LandingPage() {
                  <div className="w-full h-full overflow-y-auto overflow-x-hidden relative">
                     <div className="w-full relative h-[4500px] overflow-hidden"> {/* Height restricted to ~6 pages */}
                        <iframe 
-                         src="https://drive.google.com/file/d/1EeI7kGc0NdzWszQn1Cd6nEagjEOLdChv/preview" 
+                         src={`https://drive.google.com/file/d/${activePreviewBook.pdfId}/preview`} 
                          className="absolute -top-[52px] left-0 w-full h-[calc(100%+52px)] border-none pointer-events-auto" 
                          allow="autoplay"
                          title="Ebook Preview"
@@ -1379,8 +1473,9 @@ function LandingPage() {
                           whileHover={{ scale: 1.05 }} 
                           whileTap={{ scale: 0.95 }} 
                           onClick={() => {
-                            setIsEbookPreviewOpen(false);
-                            setIsFullReaderOpen(true);
+                            const book = activePreviewBook;
+                            setActivePreviewBook(null);
+                            setActiveFullReaderBook(book);
                           }}
                           className="bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white px-8 py-3 rounded-full font-bold shadow-lg"
                         >
@@ -1396,7 +1491,7 @@ function LandingPage() {
 
       {/* Ebook Full Reader (Free Access) */}
       <AnimatePresence>
-        {isFullReaderOpen && (
+        {activeFullReaderBook && (
           <motion.div 
             initial={{ opacity: 0, x: '100%' }}
             animate={{ opacity: 1, x: 0 }}
@@ -1409,14 +1504,14 @@ function LandingPage() {
             <div className="h-16 md:h-20 bg-[#121626] border-b border-[#262c43] flex items-center justify-between px-6 z-50">
                <div className="flex items-center gap-4">
                   <button 
-                    onClick={() => setIsFullReaderOpen(false)}
+                    onClick={() => setActiveFullReaderBook(null)}
                     className="p-2 hover:bg-white/5 rounded-xl transition-colors text-gray-400 hover:text-white"
                   >
                     <ChevronLeft className="w-6 h-6" />
                   </button>
                   <div>
                     <h3 className="font-bold text-white text-base md:text-lg leading-tight uppercase italic flex items-center gap-2">
-                       <BookOpen size={18} className="text-fuchsia-400" /> Full Ebook Reader
+                       <BookOpen size={18} className="text-fuchsia-400" /> {activeFullReaderBook.title}
                     </h3>
                     <p className="text-[10px] text-gray-500 font-bold tracking-[0.2em] uppercase">Bismahsoft Academy Premium</p>
                   </div>
@@ -1427,7 +1522,7 @@ function LandingPage() {
                      <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Free Access Granted</span>
                   </div>
                   <button 
-                    onClick={() => setIsFullReaderOpen(false)}
+                    onClick={() => setActiveFullReaderBook(null)}
                     className="w-10 h-10 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center transition-colors"
                   >
                     <Minus className="w-5 h-5 text-gray-400 rotate-45" />
@@ -1439,7 +1534,7 @@ function LandingPage() {
             <div className="flex-1 relative bg-[#05060a] overflow-hidden">
                {/* Shifted Iframe to hide original Drive toolbar (top ~52px) */}
                <iframe 
-                 src="https://drive.google.com/file/d/1EeI7kGc0NdzWszQn1Cd6nEagjEOLdChv/preview" 
+                 src={`https://drive.google.com/file/d/${activeFullReaderBook.pdfId}/preview`} 
                  className="absolute -top-[52px] left-0 w-full h-[calc(100%+52px)] border-none" 
                  allow="autoplay"
                  title="Full Ebook Viewer"
