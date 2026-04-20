@@ -1213,28 +1213,28 @@ function LandingPage() {
 
               <motion.div 
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
-                className="flex flex-wrap gap-3 pt-4"
+                className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3 pt-4 w-full"
               >
                 {["Beginner to Advanced", "Live Course", "20+ Class", "Support Included"].map((tag, i) => (
-                  <div key={i} className="px-4 py-2 rounded-full bg-[#161a2b] border border-[#262c43] text-sm text-gray-300 font-medium hover:bg-[#1a1f33] transition-colors cursor-default">
+                  <div key={i} className="px-2 sm:px-4 py-2 text-center rounded-full bg-[#161a2b] border border-[#262c43] text-xs sm:text-sm text-gray-300 font-medium hover:bg-[#1a1f33] transition-colors cursor-default">
                     {tag}
                   </div>
                 ))}
               </motion.div>
             </div>
             
-            <div className="relative mx-auto w-full max-w-[460px] lg:ml-auto lg:mr-0 z-20">
+            <div className="relative mx-auto w-full max-w-[100vw] sm:max-w-[460px] lg:ml-auto lg:mr-0 z-20">
               <motion.div 
                 initial={{ opacity: 0, scale: 0.9 }} 
                 animate={{ opacity: 1, scale: 1 }} 
                 transition={{ duration: 0.6 }}
-                className="bg-[#121626]/80 backdrop-blur-xl border border-[#262c43] rounded-[2rem] p-4 shadow-2xl relative"
+                className="bg-[#121626]/80 backdrop-blur-xl border border-[#262c43] rounded-3xl sm:rounded-[2rem] p-3 sm:p-4 shadow-2xl relative w-full"
               >
                 
                 {/* Thumbnail Area */}
                 <motion.div 
                   whileHover={{ scale: 1.02 }}
-                  className="relative w-full aspect-[4/3] sm:aspect-video rounded-3xl overflow-hidden mb-5 bg-slate-800"
+                  className="relative w-full aspect-[4/3] sm:aspect-video rounded-2xl sm:rounded-3xl overflow-hidden mb-4 sm:mb-5 bg-slate-800"
                 >
                   <img 
                      src="https://www.image2url.com/r2/default/images/1776432293871-131e44b2-e90e-436f-8f16-49f59f824e49.png" 
@@ -1250,47 +1250,47 @@ function LandingPage() {
                 </motion.div>
 
                 {/* Pricing Box */}
-                <div className="bg-[#161a2b] border border-[#262c43] rounded-[1.5rem] p-6 lg:p-8">
+                <div className="bg-[#161a2b] border border-[#262c43] rounded-2xl sm:rounded-[1.5rem] p-4 sm:p-6 lg:p-8 w-full">
                   
                   {/* Countdown Timer */}
                   <CountdownTimer targetDate="2026-05-15T23:59:59+06:00" />
 
-                  <div className="flex flex-wrap items-center gap-4 mb-6">
+                  <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-5 sm:mb-6">
                     <div className="flex flex-col">
-                      <h2 className="text-4xl font-bold text-white tracking-tight">৳6,000</h2>
+                      <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">৳6,000</h2>
                       <StarRating />
                     </div>
                     <motion.div 
                        animate={{ scale: [1, 1.05, 1] }} 
                        transition={{ repeat: Infinity, duration: 2 }}
-                       className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full whitespace-nowrap h-max"
+                       className="px-2 sm:px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] sm:text-xs font-semibold rounded-full whitespace-nowrap h-max"
                     >
                       Limited Time Offer
                     </motion.div>
                   </div>
 
-                  <ul className="space-y-4 mb-8 text-left">
+                  <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8 text-left">
                     {[
                       "নিশ্চিত লাইভ প্রজেক্টে অংশগ্রহণের সুযোগ",
                       "বাঙালি ক্লায়েন্টদের সাথে রিয়েল-টাইম কাজ",
                       "ভালো পারফর্মারদের জন্য নিশ্চিত জব সাপোর্ট",
                       "হ্যান্ডস-অন স্টেপ-বাই-স্টেপ প্র্যাক্টিক্যাল লার্নিং"
                     ].map((item, index) => (
-                      <li key={index} className="flex items-start gap-3 text-sm text-gray-300">
+                      <li key={index} className="flex items-start gap-2 sm:gap-3 text-xs sm:text-sm text-gray-300">
                         <div className="mt-1 bg-emerald-500/20 rounded-full p-0.5 flex-shrink-0">
-                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                          <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-400" />
                         </div>
-                        <span className="leading-relaxed">{item}</span>
+                        <span className="leading-snug sm:leading-relaxed">{item}</span>
                       </li>
                     ))}
                   </ul>
 
-                  <div className="space-y-3">
+                  <div className="space-y-2 sm:space-y-3">
                     <motion.button 
                       whileHover={{ scale: 1.02 }} 
                       whileTap={{ scale: 0.98 }} 
                       onClick={() => navigate('/enroll')}
-                      className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white py-4 rounded-full font-semibold shadow-[0_0_15px_rgba(139,92,246,0.3)]"
+                      className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white py-3 sm:py-4 rounded-full font-semibold text-sm sm:text-base shadow-[0_0_15px_rgba(139,92,246,0.3)]"
                     >
                       Enroll & Pay Now
                     </motion.button>
@@ -1300,7 +1300,7 @@ function LandingPage() {
                       rel="noopener noreferrer"
                       whileHover={{ scale: 1.02 }} 
                       whileTap={{ scale: 0.98 }} 
-                      className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white py-4 px-4 text-center rounded-full font-bold flex justify-center items-center shadow-[0_0_20px_rgba(37,211,102,0.3)] text-sm sm:text-base leading-tight"
+                      className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white py-3 sm:py-4 px-2 sm:px-4 text-center rounded-full font-bold flex justify-center items-center shadow-[0_0_20px_rgba(37,211,102,0.3)] text-xs sm:text-base leading-tight"
                     >
                       নতুন ব্যাচে জয়েন করতে নক দিন
                     </motion.a>
