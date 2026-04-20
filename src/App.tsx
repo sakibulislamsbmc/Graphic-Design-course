@@ -1117,11 +1117,11 @@ function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0d1017] text-white font-sans selection:bg-violet-500/30">
+    <div className="min-h-screen bg-[#0d1017] text-white font-sans selection:bg-violet-500/30 overflow-x-hidden w-full">
       {/* Navbar */}
       <MainNavbar />
 
-      <main className="relative w-full flex flex-col items-center">
+      <main className="relative w-full flex flex-col items-center overflow-x-hidden">
         {/* Glow Effects */}
         <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-violet-600/10 rounded-full blur-[150px] -translate-x-1/2 pointer-events-none"></div>
         <div className="absolute top-[20%] right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[150px] translate-x-1/3 pointer-events-none"></div>
