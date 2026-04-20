@@ -1024,30 +1024,30 @@ function CountdownTimer({ targetDate }: { targetDate: string }) {
        
        <span className="text-xs font-black uppercase tracking-[0.2em] text-pink-400 mb-3 relative z-10">Admission Deadline</span>
        
-       <div className="flex gap-3 sm:gap-4 text-center relative z-10 w-full justify-center">
-         <div className="flex flex-col items-center bg-black/20 w-14 py-2 rounded-lg border border-white/5">
-            <span className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-pink-300">
+       <div className="flex gap-2 sm:gap-4 text-center relative z-10 w-full justify-center px-2">
+         <div className="flex flex-col items-center bg-black/20 min-w-[3rem] w-12 sm:w-14 py-2 rounded-lg border border-white/5">
+            <span className="text-xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-pink-300">
               {timeLeft.days.toString().padStart(2, '0')}
             </span>
             <span className="text-[9px] sm:text-[10px] text-pink-200/70 uppercase font-bold tracking-wider mt-1">Days</span>
          </div>
-         <span className="text-2xl sm:text-3xl font-black text-pink-500/50 mt-1">:</span>
-         <div className="flex flex-col items-center bg-black/20 w-14 py-2 rounded-lg border border-white/5">
-            <span className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-pink-300">
+         <span className="text-xl sm:text-3xl font-black text-pink-500/50 mt-1">:</span>
+         <div className="flex flex-col items-center bg-black/20 min-w-[3rem] w-12 sm:w-14 py-2 rounded-lg border border-white/5">
+            <span className="text-xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-pink-300">
               {timeLeft.hours.toString().padStart(2, '0')}
             </span>
             <span className="text-[9px] sm:text-[10px] text-pink-200/70 uppercase font-bold tracking-wider mt-1">Hrs</span>
          </div>
-         <span className="text-2xl sm:text-3xl font-black text-pink-500/50 mt-1">:</span>
-         <div className="flex flex-col items-center bg-black/20 w-14 py-2 rounded-lg border border-white/5">
-            <span className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-pink-300">
+         <span className="text-xl sm:text-3xl font-black text-pink-500/50 mt-1">:</span>
+         <div className="flex flex-col items-center bg-black/20 min-w-[3rem] w-12 sm:w-14 py-2 rounded-lg border border-white/5">
+            <span className="text-xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-pink-300">
               {timeLeft.minutes.toString().padStart(2, '0')}
             </span>
             <span className="text-[9px] sm:text-[10px] text-pink-200/70 uppercase font-bold tracking-wider mt-1">Mins</span>
          </div>
-         <span className="text-2xl sm:text-3xl font-black text-pink-500/50 mt-1">:</span>
-         <div className="flex flex-col items-center bg-black/20 w-14 py-2 rounded-lg border border-white/5">
-            <span className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-pink-300">
+         <span className="text-xl sm:text-3xl font-black text-pink-500/50 mt-1">:</span>
+         <div className="flex flex-col items-center bg-black/20 min-w-[3rem] w-12 sm:w-14 py-2 rounded-lg border border-white/5">
+            <span className="text-xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-pink-300">
               {timeLeft.seconds.toString().padStart(2, '0')}
             </span>
             <span className="text-[9px] sm:text-[10px] text-pink-200/70 uppercase font-bold tracking-wider mt-1">Secs</span>
@@ -1153,36 +1153,36 @@ function LandingPage() {
         </motion.div>
 
         {/* HERO SECTION */}
-        <section className="w-full max-w-7xl px-6 pt-20 pb-24 relative z-10">
-          <div className="grid lg:grid-cols-[1.2fr_1fr] gap-12 lg:gap-8 items-center">
+        <section className="w-full max-w-7xl px-4 sm:px-6 pt-12 sm:pt-20 pb-24 relative z-10">
+          <div className="grid lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-8 items-center">
             
             <div className="flex flex-col items-start gap-6">
               <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
                 <SectionBadge text="Batch 02 Enrollment Open" />
               </motion.div>
               
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 <motion.h1 
                   initial={{ opacity: 0, x: -30 }} 
                   animate={{ opacity: 1, x: 0 }} 
                   transition={{ duration: 0.6, delay: 0.1 }}
-                  className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold leading-[1.05] tracking-tight text-white drop-shadow-sm"
+                  className="text-[2.5rem] leading-[1.1] sm:text-5xl md:text-6xl lg:text-[4.5rem] font-bold md:leading-[1.05] tracking-tight text-white drop-shadow-sm"
                 >
-                  Advanced <br /> 
-                  Graphic Design with <br />
-                  AI Tools Live <br />
+                  Advanced <br className="hidden md:block" /> 
+                  Graphic Design with <br className="hidden md:block" />
+                  AI Tools Live <br className="hidden md:block" />
                   Course
                 </motion.h1>
                 <div className="space-y-4">
                   <motion.p 
                     initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
-                    className="text-violet-400 text-xl font-bold tracking-wide"
+                    className="text-violet-400 text-lg sm:text-xl font-bold tracking-wide"
                   >
                     Level up your creativity. Master modern design.
                   </motion.p>
                   <motion.p 
                     initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
-                    className="text-gray-400 text-lg leading-relaxed max-w-xl"
+                    className="text-gray-400 text-base sm:text-lg leading-relaxed max-w-xl"
                   >
                     Step into the future of design with this advanced course that combines the foundational principles of graphic design with the power of artificial intelligence. Ideal for modern creatives, this course is designed to make your workflow faster, smarter, and more professional.
                   </motion.p>
@@ -1300,7 +1300,7 @@ function LandingPage() {
                       rel="noopener noreferrer"
                       whileHover={{ scale: 1.02 }} 
                       whileTap={{ scale: 0.98 }} 
-                      className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white py-4 rounded-full font-bold flex justify-center items-center shadow-[0_0_20px_rgba(37,211,102,0.3)] text-base whitespace-nowrap"
+                      className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white py-4 px-4 text-center rounded-full font-bold flex justify-center items-center shadow-[0_0_20px_rgba(37,211,102,0.3)] text-sm sm:text-base leading-tight"
                     >
                       নতুন ব্যাচে জয়েন করতে নক দিন
                     </motion.a>
