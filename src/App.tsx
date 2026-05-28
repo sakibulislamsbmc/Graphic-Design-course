@@ -35,6 +35,7 @@ import {
   Star,
   Users,
   ChevronLeft,
+  ChevronRight,
   Smartphone,
   CreditCard,
   Building2,
@@ -154,6 +155,14 @@ const curriculumData = [
       "বাংলাদেশি লোকাল কোম্পানিতে চাকরি সন্ধান",
       "প্রফেশনাল সিভি তৈরির প্রক্রিয়া ও গাইডলাইন",
       "ইন্টারভিউ সংক্রান্ত বিভিন্ন টেকনিক ও ৩টি স্পেশাল অ্যাসাইনমেন্ট"
+    ]
+  },
+  {
+    category: "Basic Video Editing & Animation",
+    items: [
+      "CapCut ব্যবহার করে প্রফেশনাল লেভেলের ভিডিও এডিটিং",
+      "ভিডিও এডিটিং এর বেসিক কনসেপ্ট ও ডিজাইন ইন্টিগ্রেশন",
+      "লোগো অ্যানিমেশন (Logo Animation) এবং মোশন গ্রাফিক্স"
     ]
   }
 ];
@@ -1253,7 +1262,7 @@ function LandingPage() {
                 <div className="bg-[#161a2b] border border-[#262c43] rounded-2xl sm:rounded-[1.5rem] p-4 sm:p-6 lg:p-8 w-full">
                   
                   {/* Countdown Timer */}
-                  <CountdownTimer targetDate="2026-05-15T23:59:59+06:00" />
+                  <CountdownTimer targetDate="2026-06-15T23:59:59+06:00" />
 
                   <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-5 sm:mb-6">
                     <div className="flex flex-col">
@@ -1422,6 +1431,37 @@ function LandingPage() {
                 </motion.div>
               ))}
             </div>
+          </section>
+
+          {/* Section: Meet Your Mentor */}
+          <section id="instructor-teaser" className="w-full max-w-5xl mx-auto pt-10 scroll-mt-24">
+             <SectionBadge text="Meet Your Mentor" />
+             <div 
+               onClick={() => navigate('/instructor')}
+               className="bg-gradient-to-r from-[#161a2b] to-[#121626] border border-[#262c43] hover:border-violet-500/50 p-8 md:p-10 rounded-[2rem] cursor-pointer transition-all hover:scale-[1.02] shadow-[0_10px_30px_rgba(0,0,0,0.5)] group relative overflow-hidden"
+             >
+                <div className="absolute right-0 top-0 w-64 h-full bg-gradient-to-l from-violet-600/10 to-transparent pointer-events-none"></div>
+                
+                <div className="flex flex-col md:flex-row items-center gap-8 md:gap-10 relative z-10">
+                   <div className="w-40 h-40 rounded-full border-4 border-[#262c43] group-hover:border-violet-500 transition-colors p-1 flex-shrink-0">
+                      <img 
+                        src="https://www.image2url.com/r2/default/images/1776432293871-131e44b2-e90e-436f-8f16-49f59f824e49.png" 
+                        alt="Instructor" 
+                        className="w-full h-full object-cover rounded-full scale-150 origin-top"
+                      />
+                   </div>
+                   <div className="text-center md:text-left">
+                     <h2 className="text-3xl font-black text-white mb-2 uppercase tracking-tight">Sakibul Islam <span className="text-violet-400">Sabbir</span></h2>
+                     <p className="text-violet-300 font-bold mb-4">Founder @ Bismahsoft Academy</p>
+                     <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-6 max-w-2xl">
+                       দীর্ঘ সময় ধরে ডিজাইন এবং ফ্রিল্যান্সিং ইন্ডাস্ট্রির সাথে যুক্ত, তার মূল লক্ষ্য শুধুমাত্র ডিজাইন শেখানো নয়, বরং প্র্যাক্টিক্যাল কাজ এবং ক্লায়েন্ট ডিলিং থেকে শুরু করে কিভাবে মার্কেটপ্লেসে সফল হওয়া যায় তার পূর্ণাঙ্গ গাইডলাইন...
+                     </p>
+                     <div className="flex items-center justify-center md:justify-start gap-2 text-violet-400 font-semibold group-hover:text-white transition-colors">
+                        View Full Profile <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                     </div>
+                   </div>
+                </div>
+             </div>
           </section>
 
           {/* Section 5: PC / Laptop Requirement */}
@@ -2128,12 +2168,175 @@ function LandingPage() {
   );
 }
 
+function InstructorProfile() {
+  const navigate = useNavigate();
+  const [bioLang, setBioLang] = useState<'en' | 'bn'>('en');
+
+  return (
+    <div className="min-h-screen bg-[#0d1017] text-white font-sans overflow-x-hidden">
+      {/* Navbar Minimal */}
+      <nav className="w-full relative z-40 bg-[#0d1017]/80 backdrop-blur-xl border-b border-white/5 py-4">
+        <div className="max-w-7xl mx-auto px-6 h-12 flex items-center justify-between">
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
+             <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-tr from-violet-600 to-fuchsia-500 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/20">
+               <PenTool className="text-white w-4 h-4 md:w-5 md:h-5" />
+             </div>
+             <span className="font-extrabold text-xl md:text-2xl tracking-tight leading-none pt-1">
+               Bismahsoft<br />Academy
+             </span>
+          </div>
+          <button 
+             onClick={() => navigate('/')} 
+             className="text-gray-400 hover:text-white flex items-center gap-2 transition-colors font-semibold"
+          >
+             <ChevronLeft className="w-5 h-5" />
+             Back to Course
+          </button>
+        </div>
+      </nav>
+
+      {/* Profile Header */}
+      <section className="relative w-full max-w-5xl mx-auto px-4 md:px-6 pt-16 pb-20">
+        <div className="absolute top-20 right-[10%] w-[400px] h-[400px] bg-violet-600/10 blur-[150px] rounded-full pointer-events-none"></div>
+        <div className="absolute bottom-20 left-[10%] w-[300px] h-[300px] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none"></div>
+
+        <div className="flex flex-col md:flex-row gap-10 md:gap-16 items-center relative z-10">
+           {/* Profile Picture (Large, Transparent Frame) */}
+           <motion.div 
+             initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}
+             className="w-full max-w-[350px] md:max-w-[450px] rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_0_50px_rgba(139,92,246,0.15)] backdrop-blur-sm"
+           >
+              <div className="w-full h-full rounded-xl overflow-hidden relative flex items-center justify-center">
+                 <img 
+                    src="https://www.image2url.com/r2/default/images/1779993373279-039af4a0-d5e7-4885-9ee9-b1c877e48fcf.png" 
+                    alt="Sakibul Islam Sabbir" 
+                    className="w-full h-auto object-contain drop-shadow-2xl"
+                 />
+              </div>
+           </motion.div>
+
+           {/* Info */}
+           <div className="text-center md:text-left flex-1">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+                 <SectionBadge text="Lead Instructor & Mentor" />
+              </motion.div>
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+                className="text-4xl sm:text-5xl md:text-6xl font-black mb-4 text-white uppercase tracking-tight"
+              >
+                Sakibul Islam <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">Sabbir</span>
+              </motion.h1>
+              <motion.h3 
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+                className="text-xl sm:text-2xl text-violet-300 font-bold mb-6"
+              >
+                Founder & Lead Designer
+              </motion.h3>
+              
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+                className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-8"
+              >
+                <div className="flex items-center gap-1.5 bg-[#161a2b] border border-[#262c43] px-3 py-1.5 rounded-lg text-sm font-medium text-gray-300">
+                   <Target className="w-4 h-4 text-emerald-400" /> UI/UX Expert
+                </div>
+                <div className="flex items-center gap-1.5 bg-[#161a2b] border border-[#262c43] px-3 py-1.5 rounded-lg text-sm font-medium text-gray-300">
+                   <Palette className="w-4 h-4 text-fuchsia-400" /> Graphic Designer
+                </div>
+                <div className="flex items-center gap-1.5 bg-[#161a2b] border border-[#262c43] px-3 py-1.5 rounded-lg text-sm font-medium text-gray-300">
+                   <Sparkles className="w-4 h-4 text-yellow-400" /> AI Tools Integration
+                </div>
+                <div className="flex items-center gap-1.5 bg-[#161a2b] border border-[#262c43] px-3 py-1.5 rounded-lg text-sm font-medium text-gray-300">
+                   <Brush className="w-4 h-4 text-pink-400" /> Creative Designer
+                </div>
+                <div className="flex items-center gap-1.5 bg-[#161a2b] border border-[#262c43] px-3 py-1.5 rounded-lg text-sm font-medium text-gray-300">
+                   <MonitorSmartphone className="w-4 h-4 text-indigo-400" /> AI Expert
+                </div>
+                <div className="flex items-center gap-1.5 bg-[#161a2b] border border-[#262c43] px-3 py-1.5 rounded-lg text-sm font-medium text-gray-300">
+                   <Video className="w-4 h-4 text-orange-400" /> Video Editor
+                </div>
+                <div className="flex items-center gap-1.5 bg-[#161a2b] border border-[#262c43] px-3 py-1.5 rounded-lg text-sm font-medium text-gray-300">
+                   <FileCode className="w-4 h-4 text-cyan-400" /> WordPress Developer
+                </div>
+              </motion.div>
+           </div>
+        </div>
+
+        <motion.div 
+           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+           className="mt-16 bg-[#161a2b] border border-[#262c43] p-8 md:p-12 rounded-[2rem] shadow-2xl relative z-10"
+        >
+           <div className="flex sm:items-center justify-between flex-col sm:flex-row border-b border-[#262c43] pb-4 mb-6 gap-4">
+              <h2 className="text-2xl md:text-3xl font-bold text-white">About Your Mentor</h2>
+              <div className="relative">
+                 <select 
+                   value={bioLang} 
+                   onChange={(e) => setBioLang(e.target.value as 'en' | 'bn')}
+                   className="appearance-none bg-[#0d1017] border border-[#262c43] text-white font-medium py-2 pl-4 pr-10 rounded-lg outline-none focus:border-violet-500 transition-colors shadow-lg cursor-pointer"
+                 >
+                    <option value="en">🇺🇸 English</option>
+                    <option value="bn">🇧🇩 Bengali</option>
+                 </select>
+                 <ChevronRight className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rotate-90" />
+              </div>
+           </div>
+           
+           <div className="text-gray-300 text-base md:text-lg leading-relaxed space-y-6 relative min-h-[300px]">
+              <AnimatePresence mode="wait">
+                 {bioLang === 'en' ? (
+                    <motion.div 
+                       key="en"
+                       initial={{ opacity: 0, y: 10 }}
+                       animate={{ opacity: 1, y: 0 }}
+                       exit={{ opacity: 0, y: -10 }}
+                       transition={{ duration: 0.3 }}
+                       className="space-y-6"
+                    >
+                      <p>
+                        <b>Sakibul Islam Sabbir</b> is a seasoned Graphic Designer, UI/UX Expert, and Freelancer with a distinguished track record in the design and freelancing industry. With years of hands-on experience, he has cultivated a deep understanding of visual aesthetics, user-centric design, and the evolving digital landscape. His primary mission is to go beyond merely teaching design tools; he strives to equip his students with practical workflows, effective client communication strategies, and the comprehensive guidelines needed to thrive in competitive global marketplaces like Fiverr and Upwork.
+                      </p>
+                      <p>
+                        As a versatile creative professional, Sakibul's expertise spans across industry-standard software such as Adobe Photoshop and Adobe Illustrator. Furthermore, he possesses advanced proficiency in integrating modern AI Tools into the creative process, enabling smarter, faster, and more innovative design solutions. His extensive skill set also includes basic to professional-level video editing and motion graphics using CapCut, as well as WordPress template customization, ensuring that his students develop a multifaceted and highly demanded skill profile.
+                      </p>
+                      <p>
+                        A firm believer in experiential learning, Sakibul regularly incorporates real-life project experiences and case studies into his curriculum. He is dedicated to empowering the next generation of creative professionals, transforming passionate learners into confident, successful freelancers capable of delivering exceptional value to clients worldwide.
+                      </p>
+                    </motion.div>
+                 ) : (
+                    <motion.div 
+                       key="bn"
+                       initial={{ opacity: 0, y: 10 }}
+                       animate={{ opacity: 1, y: 0 }}
+                       exit={{ opacity: 0, y: -10 }}
+                       transition={{ duration: 0.3 }}
+                       className="space-y-6"
+                    >
+                      <p>
+                        <b>সাকিবুল ইসলাম সাব্বির (Sakibul Islam Sabbir)</b> একজন প্রফেশনাল গ্রাফিক ডিজাইনার, UI/UX এক্সপার্ট এবং ফ্রিল্যান্সার, যিনি দীর্ঘ সময় ধরে ডিজাইন এবং ফ্রিল্যান্সিং ইন্ডাস্ট্রির সাথে সফলভাবে যুক্ত আছেন। দীর্ঘদিনের বাস্তব কাজের অভিজ্ঞতা থেকে তিনি ভিজ্যুয়াল নান্দনিকতা, ইউজার-সেন্ট্রিক ডিজাইন এবং পরিবর্তনশীল ডিজিটাল প্ল্যাটফর্ম সম্পর্কে গভীর জ্ঞান অর্জন করেছেন। তার মূল লক্ষ্য শুধুমাত্র ডিজাইন টুলস শেখানো নয়, বরং প্র্যাক্টিক্যাল প্রজেক্ট হ্যান্ডলিং, ক্লায়েন্ট কমিউনিকেশন এবং ফাইভার বা আপওয়ার্কের মত গ্লোবাল মার্কেটপ্লেসগুলোতে সফল হওয়ার পূর্ণাঙ্গ গাইডলাইন প্রদান করা।
+                      </p>
+                      <p>
+                        একজন বহুমুখী ক্রিয়েটিভ প্রফেশনাল হিসেবে, এডোবি ফটোশপ এবং অ্যাডোবি ইলাস্ট্রেটরের মতো ইন্ডাস্ট্রি-স্ট্যান্ডার্ড সফটওয়্যারগুলোতে তার রয়েছে বিশেষ পারদর্শিতা। পাশাপাশি আধুনিক আর্টিফিশিয়াল ইন্টেলিজেন্স (AI Tools) ব্যবহার করে কিভাবে স্মার্ট, দ্রুত এবং আরও উদ্ভাবনী ডিজাইন তৈরি করা যায়, সে বিষয়েও তিনি দক্ষ। তার এই বিস্তৃত দক্ষতার মধ্যে ক্যাপকাট (CapCut) ব্যবহার করে প্রফেশনাল ভিডিও এডিটিং, লোগো অ্যানিমেশন (Motion Graphics) এবং ওয়ার্ডপ্রেস (WordPress) ডেভেলপমেন্টও অন্তর্ভুক্ত, যা তার স্টুডেন্টদের একটি মাল্টি-স্কিলড ও হাই-ডিমান্ডিং প্রোফাইল তৈরি করতে সাহায্য করে।
+                      </p>
+                      <p>
+                        প্র্যাক্টিক্যাল লার্নিং-এ বিশ্বাসী সাকিবুল ইসলাম সাব্বির তার কারিকুলামে নিয়মিত রিয়েল-লাইফ প্রজেক্ট এবং কেস স্টাডি শেয়ার করে থাকেন। তিনি তার স্টুডেন্টদের মাঝে এমন আত্মবিশ্বাস তৈরি করতে প্রতিশ্রুতিবদ্ধ, যাতে তারা লোকাল এবং ইন্টারন্যাশনাল ক্লায়েন্টদের সাথে প্রফেশনালভাবে কাজ করে ক্যারিয়ারে সফল হতে পারে।
+                      </p>
+                    </motion.div>
+                 )}
+              </AnimatePresence>
+           </div>
+        </motion.div>
+      </section>
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/enroll" element={<EnrollmentPage />} />
+        <Route path="/instructor" element={<InstructorProfile />} />
         <Route path="/assessment" element={<AssessmentPage />} />
       </Routes>
     </Router>
