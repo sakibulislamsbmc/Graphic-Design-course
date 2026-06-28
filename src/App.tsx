@@ -1262,7 +1262,7 @@ function LandingPage() {
                 <div className="bg-[#161a2b] border border-[#262c43] rounded-2xl sm:rounded-[1.5rem] p-4 sm:p-6 lg:p-8 w-full">
                   
                   {/* Countdown Timer */}
-                  <CountdownTimer targetDate="2026-06-15T23:59:59+06:00" />
+                  <CountdownTimer targetDate="2026-07-15T23:59:59+06:00" />
 
                   <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-5 sm:mb-6">
                     <div className="flex flex-col">
